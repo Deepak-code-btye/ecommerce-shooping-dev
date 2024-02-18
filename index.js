@@ -1,7 +1,6 @@
 import dotenv from "dotenv";
 import express from "express";
 const app = express();
-import mongoose from "mongoose";
 import cors from "cors";
 import session from "express-session";
 import passport from "passport";
@@ -24,9 +23,14 @@ import stripe from "stripe";
 
 dotenv.config();
 
+// database
+connectDB();
+
 import { fileURLToPath } from "url";
+
 import { dirname, join } from "path";
 import morgan from "morgan";
+import connectDB from "./db/conn.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -95,6 +99,8 @@ app.use(cookieParser());
 //   })
 // );
 // app.use(passport.authenticate("session"));
+
+// cors origin
 app.use(
   cors({
     exposedHeaders: ["X-Total-Count"],
@@ -208,13 +214,6 @@ app.post("/create-payment-intent", async (req, res) => {
     clientSecret: paymentIntent.client_secret,
   });
 });
-
-async function main() {
-  await mongoose.connect(process.env.MONGODB_URL);
-  console.log("database connected");
-}
-
-main().catch((err) => console.log(err));
 
 app.listen(process.env.PORT, () => {
   console.log("app started", process.env.PORT);
