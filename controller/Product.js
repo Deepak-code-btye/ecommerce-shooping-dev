@@ -10,7 +10,10 @@ export const createProduct = async (req, res) => {
     const doc = await product.save();
     res.status(201).json(doc);
   } catch (err) {
-    res.status(400).json(err);
+    res.status(400).json({
+      success: false,
+      message: err.message,
+    });
   }
 };
 
@@ -59,7 +62,10 @@ export const fetchAllProducts = async (req, res) => {
     res.set("X-Total-Count", totalDocs);
     res.status(200).json(docs);
   } catch (err) {
-    res.status(400).json(err);
+    res.status(400).json({
+      success: false,
+      message: err.message,
+    });
   }
 };
 
@@ -70,7 +76,10 @@ export const fetchProductById = async (req, res) => {
     const product = await Product.findById(id);
     res.status(200).json(product);
   } catch (err) {
-    res.status(400).json(err);
+    res.status(400).json({
+      success: false,
+      message: err.message,
+    });
   }
 };
 
@@ -86,6 +95,9 @@ export const updateProduct = async (req, res) => {
     const updatedProduct = await product.save();
     res.status(200).json(updatedProduct);
   } catch (err) {
-    res.status(400).json(err);
+    res.status(400).json({
+      success: false,
+      message: err.message,
+    });
   }
 };

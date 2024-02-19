@@ -19,7 +19,10 @@ export const createUser = async (req, res) => {
         req.login(sanitizeUser(doc), (err) => {
           // this also calls serializer and adds to session
           if (err) {
-            res.status(400).json(err);
+            res.status(400).json({
+              success: false,
+              message: err.message,
+            });
           } else {
             const token = jwt.sign(
               sanitizeUser(doc),
@@ -37,7 +40,10 @@ export const createUser = async (req, res) => {
       }
     );
   } catch (err) {
-    res.status(400).json(err);
+    res.status(400).json({
+      success: false,
+      message: err.message,
+    });
   }
 };
 

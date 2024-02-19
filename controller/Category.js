@@ -5,7 +5,10 @@ export const fetchCategories = async (req, res) => {
     const categories = await Category.find({}).exec();
     res.status(200).json(categories);
   } catch (err) {
-    res.status(400).json(err);
+    res.status(400).json({
+      success: false,
+      message: err.message,
+    });
   }
 };
 
@@ -15,6 +18,9 @@ export const createCategory = async (req, res) => {
     const doc = await category.save();
     res.status(201).json(doc);
   } catch (err) {
-    res.status(400).json(err);
+    res.status(400).json({
+      success: false,
+      message: err.message,
+    });
   }
 };
