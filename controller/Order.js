@@ -8,9 +8,16 @@ export const fetchOrdersByUser = async (req, res) => {
   try {
     const orders = await Order.find({ user: id });
 
-    res.status(200).json(orders);
+    res.status(200).json({
+      success: true,
+      message: "get order details",
+      orders,
+    });
   } catch (err) {
-    res.status(400).json(err);
+    res.status(400).json({
+      success: true,
+      message: err.message || "failled",
+    });
   }
 };
 
@@ -37,7 +44,10 @@ export const createOrder = async (req, res) => {
 
     res.status(201).json(doc);
   } catch (err) {
-    res.status(400).json(err);
+    res.status(400).json({
+      success: false,
+      message: err.message,
+    });
   }
 };
 
@@ -47,7 +57,10 @@ export const deleteOrder = async (req, res) => {
     const order = await Order.findByIdAndDelete(id);
     res.status(200).json(order);
   } catch (err) {
-    res.status(400).json(err);
+    res.status(400).json({
+      success: false,
+      message: err.message,
+    });
   }
 };
 
@@ -59,9 +72,14 @@ export const updateOrder = async (req, res) => {
     });
     res.status(200).json(order);
   } catch (err) {
-    res.status(400).json(err);
+    res.status(400).json({
+      success: false,
+      message: err.message,
+    });
   }
 };
+
+// for admin
 
 export const fetchAllOrders = async (req, res) => {
   // sort = {_sort:"price",_order="desc"}
@@ -87,6 +105,9 @@ export const fetchAllOrders = async (req, res) => {
     res.set("X-Total-Count", totalDocs);
     res.status(200).json(docs);
   } catch (err) {
-    res.status(400).json(err);
+    res.status(400).json({
+      success: false,
+      message: err.message,
+    });
   }
 };

@@ -7,7 +7,10 @@ export const fetchCartByUser = async (req, res) => {
 
     res.status(200).json(cartItems);
   } catch (err) {
-    res.status(400).json(err);
+    res.status(400).json({
+      success: false,
+      message: err.message,
+    });
   }
 };
 
@@ -19,7 +22,10 @@ export const addToCart = async (req, res) => {
     const result = await doc.populate("product");
     res.status(201).json(result);
   } catch (err) {
-    res.status(400).json(err);
+    res.status(400).json({
+      success: false,
+      message: err.message,
+    });
   }
 };
 
@@ -29,7 +35,10 @@ export const deleteFromCart = async (req, res) => {
     const doc = await Cart.findByIdAndDelete(id);
     res.status(200).json(doc);
   } catch (err) {
-    res.status(400).json(err);
+    res.status(400).json({
+      success: false,
+      message: err.message,
+    });
   }
 };
 
@@ -43,6 +52,9 @@ export const updateCart = async (req, res) => {
 
     res.status(200).json(result);
   } catch (err) {
-    res.status(400).json(err);
+    res.status(400).json({
+      success: false,
+      message: err.message,
+    });
   }
 };
