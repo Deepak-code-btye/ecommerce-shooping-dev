@@ -12,14 +12,24 @@ const connectDB = async () => {
       );
     }
 
-    await mongoose.connect(uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    let timeout = 25;
+    while (mongoose.connection.readyState === 0) {
+      if (timeout === 0) {
+        console.log("timeout");
+        throw new Error("timeout occured with mongoose connection");
+      }
 
+      await mongoose.connect(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      });
+
+      timeout--;
+    }
+    console.log("Database connection status:", mongoose.connection.readyState);
     console.log(`Mongodb connected ${mongoose.connection.host}`);
   } catch (error) {
-    console.log(`Mongodb Server Issue `);
+    console.log(`Mongodb Server Issue `, error);
     // process.exit(1); // Exit with failure
   }
 };
