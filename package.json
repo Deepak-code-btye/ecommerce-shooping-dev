@@ -9,7 +9,7 @@
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Deepak Kumar",
   "license": "ISC",
   "dependencies": {
     "connect-sqlite": "^0.0.1",

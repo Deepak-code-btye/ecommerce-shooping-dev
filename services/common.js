@@ -11,6 +11,7 @@ let transporter = nodemailer.createTransport({
   },
 });
 
+// this is route middleware
 export const isAuth = (req, res, done) => {
   return passport.authenticate("jwt");
 };

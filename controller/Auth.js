@@ -4,6 +4,7 @@ import { sanitizeUser, sendMail } from "../services/common.js";
 import jwt from "jsonwebtoken";
 
 export const createUser = async (req, res) => {
+  // console.log("create user details =>", { ...req.body });
   try {
     const salt = crypto.randomBytes(16);
     crypto.pbkdf2(
@@ -15,7 +16,7 @@ export const createUser = async (req, res) => {
       async function (err, hashedPassword) {
         const user = new User({ ...req.body, password: hashedPassword, salt });
         const doc = await user.save();
-
+        // console.log("doc", doc);
         req.login(sanitizeUser(doc), (err) => {
           // this also calls serializer and adds to session
           if (err) {
@@ -28,6 +29,7 @@ export const createUser = async (req, res) => {
               sanitizeUser(doc),
               process.env.JWT_SECRET_KEY
             );
+
             res
               .cookie("jwt", token, {
                 expires: new Date(Date.now() + 3600000),
@@ -40,7 +42,7 @@ export const createUser = async (req, res) => {
       }
     );
   } catch (err) {
-    res.status(400).json({
+    res.status(404).json({
       success: false,
       message: err.message,
     });
