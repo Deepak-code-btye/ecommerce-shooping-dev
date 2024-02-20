@@ -92,14 +92,14 @@ app.use(morgan("dev"));
 
 // app.use(express.static(path.resolve(__dirname, "build")));
 app.use(cookieParser());
-// app.use(
-//   session({
-//     secret: process.env.SESSION_KEY,
-//     resave: false, // don't save session if unmodified
-//     saveUninitialized: false, // don't create session until something stored
-//   })
-// );
-// app.use(passport.authenticate("session"));
+app.use(
+  session({
+    secret: process.env.SESSION_KEY,
+    resave: false, // don't save session if unmodified
+    saveUninitialized: false, // don't create session until something stored
+  })
+);
+app.use(passport.authenticate("session"));
 
 // cors origin
 app.use(
@@ -123,6 +123,27 @@ app.get("*", (req, res) => res.sendFile(path.resolve("build", "index.html")));
 app.get("/", (req, res) => res.sendFile("welcome to ecommerce app"));
 
 // we have created Passport Strategies
+
+// Define a function to hash the password using bcrypt
+const hashPassword = async (password, salt) => {
+  return new Promise((resolve, reject) => {
+    crypto.pbkdf2(
+      password,
+      salt,
+      310000,
+      32,
+      "sha256",
+      (err, hashedPassword) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(hashedPassword);
+        }
+      }
+    );
+  });
+};
+
 passport.use(
   "local",
   new LocalStrategy({ usernameField: "email" }, async function (
@@ -130,31 +151,20 @@ passport.use(
     password,
     done
   ) {
-    // by default passport uses username
-    console.log({ email, password });
     try {
       const user = await User.findOne({ email: email });
-      console.log(email, password, user);
       if (!user) {
-        return done(null, false, { message: "invalid credentials" }); // for safety
+        return done(null, false, { message: "Invalid credentials" });
       }
-      crypto.pbkdf2(
-        password,
-        user.salt,
-        310000,
-        32,
-        "sha256",
-        async function (err, hashedPassword) {
-          if (!crypto.timingSafeEqual(user.password, hashedPassword)) {
-            return done(null, false, { message: "invalid credentials" });
-          }
-          const token = jwt.sign(
-            sanitizeUser(user),
-            process.env.JWT_SECRET_KEY
-          );
-          done(null, { id: user.id, role: user.role, token }); // this lines sends to serializer
-        }
-      );
+
+      const hashedPassword = await hashPassword(password, user.salt);
+
+      if (!crypto.timingSafeEqual(user.password, hashedPassword)) {
+        return done(null, false, { message: "Invalid credentials" });
+      }
+
+      const token = jwt.sign(sanitizeUser(user), process.env.JWT_SECRET_KEY);
+      done(null, { id: user.id, role: user.role, token });
     } catch (err) {
       done(err);
     }
