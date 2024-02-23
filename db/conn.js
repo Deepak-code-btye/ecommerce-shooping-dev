@@ -19,10 +19,7 @@ const connectDB = async () => {
         throw new Error("timeout occured with mongoose connection");
       }
 
-      await mongoose.connect(uri, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      });
+      await mongoose.connect(uri, {});
 
       timeout--;
     }
