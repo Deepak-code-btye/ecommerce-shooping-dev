@@ -119,7 +119,7 @@ app.use("/cart", isAuth(), cartRouter);
 app.use("/orders", isAuth(), ordersRouter);
 
 // this line we add to make react router work in case of other routes doesnt match
-app.get("*", (req, res) => res.sendFile(path.resolve("build", "index.html")));
+// app.get("*", (req, res) => res.sendFile(path.resolve("build", "index.html")));
 app.get("/", (req, res) => res.sendFile("welcome to ecommerce app"));
 
 // we have created Passport Strategies
